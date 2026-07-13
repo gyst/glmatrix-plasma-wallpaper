@@ -43,7 +43,9 @@ layout(binding = 1) uniform sampler2D glyphAtlas;
 const int CHAR_COLS = 16;
 const int CHAR_ROWS = 13;
 const int NUM_LAYERS = 8;
-const float CELL_ASPECT = 46.0 / 32.0;    // glyph height / width from atlas
+// Atlas cell is 64x64 (square) -> on-screen cells are square; the tall-narrow
+// half-width katakana keep their shape from the texture sampling within the cell.
+const float CELL_ASPECT = 64.0 / 64.0;    // glyph height / width from atlas
 const int WAVE_SIZE = 22;
 const float SPLASH_RATIO = 0.7;
 
@@ -99,10 +101,14 @@ int getGlyphIndex(float h, int encMode) {
         if (idx == 2) return 39;
         return 52;
     }
-    // Matrix mode (0): digits (16-25) + katakana-esque (160-175)
-    int idx = int(h * 26.0);
-    if (idx < 10) return 16 + idx;
-    return 160 + (idx - 10);
+    // Matrix mode (0): predominantly half-width katakana (160-207, 48 glyphs,
+    // U+FF66..) with an occasional digit mixed in (~1 in 16) for texture.
+    int idx = int(h * 48.0);
+    int gi = 160 + idx;
+    if (fract(h * 7919.0) < 0.0625) {
+        gi = 16 + (idx % 10);   // sparse digit injection across 0-9
+    }
+    return gi;
 }
 
 // -- Glyph atlas UV lookup --
