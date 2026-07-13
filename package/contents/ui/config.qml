@@ -25,8 +25,8 @@ Kirigami.FormLayout {
             id: speedSlider
             Layout.preferredWidth: Kirigami.Units.gridUnit * 14
             from: 0.1
-            to: 5.0
-            stepSize: 0.1
+            to: 1.0
+            stepSize: 0.05
             value: wallpaper.configuration.speed || 1.0
         }
 
@@ -44,7 +44,7 @@ Kirigami.FormLayout {
             id: densitySlider
             Layout.preferredWidth: Kirigami.Units.gridUnit * 14
             from: 1
-            to: 100
+            to: 40
             stepSize: 1
             value: wallpaper.configuration.density || 20
         }
