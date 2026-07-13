@@ -13,6 +13,28 @@ selection, wave phases, depth layers) without any CPU-side state.
 
 ![screenshot](screenshot.png)
 
+## Fork changes
+
+This fork adapts upstream GL Matrix for a cyan-tinted, katakana, low-speed
+desktop look on 4K. Changes, all in `glmatrix.frag` / the config UI:
+
+- **Katakana glyph atlas.** Upstream's `matrix3.png` is xscreensaver's
+  ASCII+Latin-1 sheet (no katakana) and is deliberately low-res/blurry. It was
+  regenerated as crisp half-width katakana (U+FF66..) plus digits and hex
+  letters, rendered from **Noto Sans CJK JP** at 64x64 px/cell (1024x832,
+  same 16x13 grid). `getGlyphIndex` was rewired so Matrix mode draws from the
+  katakana range with an occasional digit; `CELL_ASPECT` set to `1.0` for the
+  square cells.
+- **Hue.** Recolored from canonical green to a blue-leaning cyan `#20D0E0`
+  (`color += alpha * vec3(0.125, 0.816, 0.878)`). Head glow is
+  brightness-driven so it still pops at the leading edge.
+- **Density baseline.** Near-layer column base raised (`floor(50.0 * ...)`)
+  so glyphs render near the atlas's native cell size on 4K — crisp, not
+  magnified/blocky.
+- **Low-end tuning.** Speed slider rescaled to `0.01–1.0` (step `0.01`,
+  2-decimal readout) and density to `1–40`, so the useful low range fills the
+  slider instead of being pinned in a corner.
+
 ## Features
 
 - Multiple depth layers with perspective scaling and fog
@@ -79,8 +101,8 @@ Right-click the desktop, choose "Configure Desktop and Wallpaper", and select
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| Speed | 1.0 | Animation speed multiplier (0.1 - 5.0) |
-| Density | 20 | How many glyph strips are active (1 - 100) |
+| Speed | 1.0 | Animation speed multiplier (0.01 - 1.0, this fork) |
+| Density | 20 | How many glyph strips are active (1 - 40, this fork) |
 | Mode | Matrix | Glyph encoding: Matrix, Binary, Hex, Decimal, DNA |
 | Fog | On | Depth-based dimming (farther layers are darker) |
 | Waves | On | Rolling brightness variation across strips |
@@ -99,8 +121,8 @@ pixel on screen:
    functions seeded by column index and layer number
 4. Each column runs a draw/erase/gap cycle - the "spinner" drops from top to
    bottom revealing glyphs, then an erase wave follows
-5. Glyphs are sampled from the xscreensaver `matrix3.png` texture atlas
-   (16x13 grid of characters)
+5. Glyphs are sampled from the `matrix3.png` texture atlas (16x13 grid;
+   this fork's atlas is katakana rendered from Noto Sans CJK JP)
 6. Brightness is modulated by fog (depth), waves (rolling sin curve), and
    splash fade (closest layer fade-out)
 7. Layers are composited with additive blending, matching the original's
@@ -128,7 +150,7 @@ kmatrix/
         Shaders6/
           glmatrix.frag.qsb               # Compiled shader (generated)
         Resources/
-          matrix3.png                      # Glyph atlas from xscreensaver
+          matrix3.png                      # Glyph atlas (this fork: katakana, Noto Sans CJK JP)
   build.sh                                # Compile + install
   LICENSE
   README.md
