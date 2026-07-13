@@ -24,14 +24,14 @@ Kirigami.FormLayout {
         Slider {
             id: speedSlider
             Layout.preferredWidth: Kirigami.Units.gridUnit * 14
-            from: 0.1
+            from: 0.01
             to: 1.0
-            stepSize: 0.05
+            stepSize: 0.01
             value: wallpaper.configuration.speed || 1.0
         }
 
         Label {
-            text: speedSlider.value.toFixed(1) + "x"
+            text: speedSlider.value.toFixed(2) + "x"
             Layout.preferredWidth: Kirigami.Units.gridUnit * 3
         }
     }
