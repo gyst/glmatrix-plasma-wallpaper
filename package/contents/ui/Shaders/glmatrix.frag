@@ -163,7 +163,7 @@ void main() {
         // Base of 25 targets ~67 cols at 1080p 16:9 (original uses 70)
         // Scale with resolution so 4K doesn't look zoomed in
         float resScale = max(1.0, ubuf.iResolution.x / 1920.0);
-        float numCols = floor(25.0 * scale * aspect * resScale);
+        float numCols = floor(50.0 * scale * aspect * resScale);
         // Compute rows to fill screen while preserving glyph aspect ratio
         // cellHeight/cellWidth = CELL_ASPECT, so numRows = numCols / (aspect * CELL_ASPECT)
         float numRows = max(8.0, floor(numCols / (aspect * CELL_ASPECT)));
