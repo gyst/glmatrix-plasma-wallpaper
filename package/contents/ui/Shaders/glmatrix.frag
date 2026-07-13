@@ -310,11 +310,11 @@ void main() {
 
         // Accumulate (additive blending across layers)
         // Original uses green-on-black with glBlendFunc(GL_SRC_ALPHA, GL_ONE)
+        // Recolored to #00E0C0 balanced teal-cyan (R=0, G=0.88, B=0.75):
+        // green-dominant so it still reads as Matrix rain, strong blue channel
+        // pulls it toward cyan. Head glow stays brightest (brightness-driven).
         float alpha = glyphShape * brightness;
-        color.g += alpha;
-        // Add subtle color tint for highlights and depth
-        color.r += alpha * 0.05;
-        color.b += alpha * 0.05;
+        color += alpha * vec3(0.0, 0.88, 0.75);
     }
 
     // Clamp to avoid oversaturation
